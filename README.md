@@ -19,7 +19,7 @@ The pipeline is defined using a series of Dagster resources and operations, maki
 
 - **Resources**:
   - `file_resource`: Provides the file path and sheet names from an Excel (.xlsx) file containing the data to be processed.
-  - `db_resource`: Creates a SQLAlchemy engine for connecting to a MySQL database.
+  - `db_resource`: Provides the environmental variable name containing MySQL connection string. 
 
 - **Operations**:
   - `extract_nodes_data_local_file`: Extracts nodes data from the specified sheet in the Excel file and returns it as a DataFrame.
@@ -78,7 +78,7 @@ The pipeline is defined using a series of Dagster resources and operations, maki
     );
     ```
 
-4. Set the `MYSQL_DB_CONN_STRING` environment variable with the connection string to your MySQL database.
+4. Set the `MYSQL_DB_CONN_STRING` environment variable with the connection string to your MySQL database. 
 ```
 export MYSQL_DB_CONN_STRING=mysql://username:password@hostname:port/database
 ```
