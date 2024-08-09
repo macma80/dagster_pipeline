@@ -104,7 +104,7 @@ You can run the pipeline using Dagster's CLI or UI.
 
 1. Run the pipeline using Dagster's CLI:
     ```bash
-    dagster pipeline execute -f main.py
+    dagster dev -f main.py
     ```
 
 2. Alternatively, you can use the Dagster UI to run and monitor the pipeline.
