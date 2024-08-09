@@ -1,0 +1,9 @@
+# MySQL storage can be set using either credentials or a connection string.  This requires that the
+# `dagster-mysql` library be installed.
+
+# this config grabs the MySQL connection string from environment variables
+storage:
+  mysql:
+    mysql_url:
+      env: MYSQL_DB_CONN_STRING
+
