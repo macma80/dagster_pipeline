@@ -123,10 +123,3 @@ You can run the pipeline using Dagster's CLI or UI.
 - The database operations replace existing tables by default. If you want to append data instead, modify the `if_exists` parameter in the `to_sql` method calls.
 - This project currently reads the Excel file from local storage. However, the design is flexible and can be extended in the future to support reading files directly from AWS S3 or other cloud storage solutions."
 
-## Contributing
-
-Contributions are welcome! Please submit a pull request or open an issue if you find any bugs or have suggestions for improvement.
-
-## License
-
-This project is licensed under the MIT License. 
