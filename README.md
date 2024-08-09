@@ -1,7 +1,7 @@
 # Adjacency Data Pipeline
 
 This repository contains a Dagster pipeline that processes and loads adjacency data from an Excel file into a MySQL database.
-The pipeline is defined using a series of Dagster resources and operations, making it easy to manage data extraction, transformation, and loading (ETL) tasks, as well as a scheduled job to run the pipeline daily. Note that this ETL pipeline performs a full load, this is done for two reasons: because of the data characteristics and to simplify the logic and avoid the potential errors or inconsistencies caused by incremental load. 
+The pipeline is defined using a series of Dagster resources and operations, making it easy to manage data extraction, transformation, and loading (ETL) tasks, as well as a scheduled job to run the pipeline daily. Note that this ETL pipeline performs a full load, this is done for three reasons: because of the data characteristics, to simplify the logic and to avoid the potential errors or inconsistencies caused by incremental load. This project currently reads the Excel file from local storage. However, the design is flexible and can be extended in the future to support reading files directly from AWS S3 or other cloud storage solutions. This option is left out for future improvements. 
 
 
 ## Project Structure
@@ -84,7 +84,7 @@ export MYSQL_DB_CONN_STRING=mysql://username:password@hostname:port/database
 ```
 ### Configuration
 
-- Pipeline Configuration. Pipeline is configured in file `job_config.py` and has the following settings:
+- Pipeline Configuration. Pipeline is configured through file `job_config.py` and has the following settings:
 
     1. File Resource Configuration:
         1. `file_path`: Path to the Excel file containing the adjacency matrix and nodes data.
@@ -92,7 +92,7 @@ export MYSQL_DB_CONN_STRING=mysql://username:password@hostname:port/database
         3. `nodes_sheet_name`: Name of the sheet containing the nodes data.
 
     2. Database Resource Configuration:
-        1. `var_name`: Name of the environment variable that stores the MySQL connection string.
+        1. `var_name`: Name of the environment variable containing the MySQL connection string.
 
 ### Schedule Configuration
 The pipeline is scheduled to run daily at 9 AM (Mexico City timezone) using the following cron expression:
@@ -111,15 +111,15 @@ You can run the pipeline using Dagster's CLI or UI.
 
 ### Pipeline Flow
 
-1. **Extract Nodes Data**: Reads nodes data from the Excel file
-2. **Load Nodes Data**: Loads the extracted data into the `nodes` table in the MySQL database.
-3. **Extract Adjacency Data**: Reads the adjacency matrix data from the Excel file.
-4. **Transform Adjacency Data**: Transforms the extracted adjacency data to a format suitable for database insertion.
-5. **Load Adjacency Data**: Loads the transformed data into the `adjacency_list` table in the MySQL database.
+1. **Extract Nodes Data**: Performed via `extract_nodes_data_local_file` op.
+2. **Load Nodes Data**: Performed via `load_nodes_data` op.
+3. **Extract Adjacency Data**: Performed via `load_nodes_data` op.
+4. **Transform Adjacency Data**: Performed via `extract_adjacency_data_local_file` op.
+5. **Load Adjacency Data**: Performed via `load_adjacency_data` op.
 
 ## Notes
 
 - The pipeline assumes that the Excel file has a specific structure (e.g., certain rows and columns are skipped, and column names are manually defined). Ensure that your input files match these expectations.
-- The database operations replace existing tables by default. If you want to append data instead, modify the `if_exists` parameter in the `to_sql` method calls.
-- This project currently reads the Excel file from local storage. However, the design is flexible and can be extended in the future to support reading files directly from AWS S3 or other cloud storage solutions."
+- Since the ETL performs a full load, the database operations replace existing tables by default. This is done via the `if_exists` parameter in the `to_sql` method calls.
+
 
