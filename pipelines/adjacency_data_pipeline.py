@@ -10,8 +10,6 @@ from job_config import config_json
 def file_resource(init_context):
     """
     A Dagster resource that provides the file path to an Excel (.xlsx) file and the names of sheets to be read.
-    This resource is used to supply the path of the Excel file along with the names of the sheets
-    that will be read in other parts of the pipeline.
     :param init_context: The initialization context that provides access to the resource configuration.
     :return: dict: A dictionary containing:
             - "file_path": str: The path to the Excel (.xlsx) file.
@@ -41,7 +39,7 @@ def db_resource(init_context):
     """
     A Dagster resource that provides a SQLAlchemy engine for connecting to a MySQL database.
     This resource retrieves the MySQL connection string from an environment variable, specified by the `var_name`
-    It then creates and returns a SQLAlchemy engine that can be used to interact with the MySQL database.
+    It then creates and returns a SQLAlchemy engine to interact with the MySQL database.
     :param init_context: The initialization context that provides access to the resource configuration.
     :return: sqlalchemy.engine.Engine: A SQLAlchemy engine connected to the MySQL database.
     """
@@ -63,7 +61,7 @@ def db_resource(init_context):
 def extract_nodes_data_local_file(context) -> pd.DataFrame:
     """
     Reads nodes data from a specified sheet in an Excel (.xlsx) file and returns it as a DataFrame.
-    :param context: The execution context provided by Dagster. It includes access to resources and logging capabilities.
+    :param context: The execution context provided by Dagster.
     The `file_resource` resource is used to obtain configuration values such as the file path and sheet name.
     :return: pd.DataFrame: A DataFrame containing the nodes data read from the specified sheet in the Excel file.
     """
@@ -73,8 +71,8 @@ def extract_nodes_data_local_file(context) -> pd.DataFrame:
     context.log.info(f"Reading {sheet_name} sheet from {file_path}")
 
     # Read Excel file and corresponding sheet
-    # NOTE: File provided starts from row 4 and has no column names. The following line adapts to that scenario,
-    # but should be validated with the Data team, if this will always be the case.
+    # TODO: File provided starts from row 4 and has no column names. The following line adapts to that scenario,
+    #  but should be validated with the Data team, if this will always be the case.
     # Since columns have no headers in the file provided, they are explicitly named to match MySql table schema
     nodes_df = pd.read_excel(file_path, sheet_name=sheet_name, engine="openpyxl", skiprows=3,
                              names=["id_num", "id", "name"])
@@ -153,6 +151,8 @@ def transform_adjacency_data(context, df: pd.DataFrame):
         for col_name in df.columns:
             if col_name not in ['id_num', 'id']:
                 if row[col_name] == 1:
+                    # TODO: In most cases an adjacency matrix does not contain values in the main diagonal.
+                    #  To confirm with team if this validation aligns with business logic.
                     # Validate if from_node_id and to_node_id are the same
                     if row_name == col_name:
                         context.log.warning(
