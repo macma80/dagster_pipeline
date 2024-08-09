@@ -114,7 +114,8 @@ def extract_adjacency_data_local_file(context) -> pd.DataFrame:
     context.log.info(f"Reading {sheet_name} sheet from {file_path}")
 
     # Read Excel file and corresponding sheet
-    # NOTE: argument header is set up to row 1, since that is the row that contains the id for each node.
+    # TODO: argument header is set up to row 1, since that is the row that contains the id for each node.
+    #  Should validate with the team if this will always be the case
     adjacency_df = pd.read_excel(file_path, sheet_name=sheet_name, engine="openpyxl", header=1)
 
     # Rename columns to match table schema
