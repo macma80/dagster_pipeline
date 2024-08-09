@@ -1,10 +1,4 @@
-resources:
-  file_resource:
-    config:
-      file_path: "/home/mauricio/PycharmProjects/dagsterProject/Matriz_de_adyacencia_data_team.xlsx"
-      adjacency_sheet_name: "Matriz de adyacencia"
-      actors_sheet_name: "Lista de actores"
-  db_resource:
-    config:
-           var_name: "MYSQL_DB_CONN_STRING"
-
+load_from:
+  - python_file: main.py
+  - python_module: pipelines
+  - python_module: schedules
