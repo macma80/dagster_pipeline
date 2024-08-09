@@ -1,1 +1,0 @@
-from .adjacency_data_pipeline import adjacency_data_pipeline

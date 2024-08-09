@@ -1,1 +1,0 @@
-from .daily_schedule import daily_adjacency_data_pipeline_schedule
