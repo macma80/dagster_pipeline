@@ -21,8 +21,8 @@ def file_resource(init_context):
     adjacency_sheet_name = init_context.resource_config["adjacency_sheet_name"]
     nodes_sheet_name = init_context.resource_config["nodes_sheet_name"]
 
-    # Validate file_path has been provided.
     # TODO: Validate if file_path exists.
+    # Validate file_path has been provided.
     if not file_path:
         raise ValueError("file_path cannot be empty")
 
@@ -73,7 +73,7 @@ def extract_nodes_data_local_file(context) -> pd.DataFrame:
     # Read Excel file and corresponding sheet
     # TODO: File provided starts from row 4 and has no column names. The following line adapts to that scenario,
     #  but should be validated with the Data team, if this will always be the case.
-    # Since columns have no headers in the file provided, they are explicitly named to match MySql table schema
+    # Since columns have no headers in the file provided, they are explicitly named to match MySQL table schema
     nodes_df = pd.read_excel(file_path, sheet_name=sheet_name, engine="openpyxl", skiprows=3,
                              names=["id_num", "id", "name"])
     return nodes_df
@@ -94,8 +94,7 @@ def load_nodes_data(context, df: pd.DataFrame):
     context.log.info("Loading nodes data")
 
     # Load data into 'nodes' table.
-    # NOTE: Argument if_exists="replace" will drop the table before inserting new values.
-    # Change to "append" if values will be inserted to the existing table.
+    # NOTE: Since ETL performs a full load, if table already exists, it will be replaced.
     df.to_sql("nodes", con=engine, if_exists="replace", index=False)
     context.log.info("Nodes data loaded successfully")
 
@@ -107,7 +106,7 @@ def extract_adjacency_data_local_file(context) -> pd.DataFrame:
     :param context: The execution context provided by Dagster.
     :return: pd.DataFrame: A DataFrame containing the adjacency matrix data from the "Matriz de adyacencia" sheet.
     The DataFrame columns are renamed for consistency, with 'Unnamed: 0' changed to 'id_num' and
-    'Unnamed: 1' changed to 'id' to match MySql table schema.
+    'Unnamed: 1' changed to 'id' to match MySQL table schema.
     """
     # Get file_path and corresponding sheet_name from resource
     file_path = context.resources.file_resource["file_path"]
@@ -129,7 +128,7 @@ def extract_adjacency_data_local_file(context) -> pd.DataFrame:
 def transform_adjacency_data(context, df: pd.DataFrame):
     """
     Function transforms adjacency matrix data by converting rows with columns containing the value 1
-    into a DataFrame suitable for insertion into MySql database adjacency_list.
+    into a DataFrame suitable for insertion into MySQL database adjacency_list.
     Each relationship is represented as a tuple containing `from_node_id`, `to_node_id`, and `weight`.
     The function skips any relationships where `from_node_id` is equal to `to_node_id` (self-loops) and logs a warning.
     :param context: The execution context provided by Dagster, which is not used.
@@ -170,7 +169,7 @@ def transform_adjacency_data(context, df: pd.DataFrame):
 @op(required_resource_keys={"db_resource"})
 def load_adjacency_data(context, df: pd.DataFrame):
     """
-    Loads adjacency data into a MySql table 'adjacency_list'. If the table already exists, it will be replaced.
+    Loads adjacency data into a MySQL table 'adjacency_list'. If the table already exists, it will be replaced.
     :param context: The execution context provided by Dagster
     :param df: The DataFrame containing adjacency data to be loaded into the database.
             The DataFrame must be structured appropriately for insertion into the 'adjacency_list' table.
@@ -181,8 +180,7 @@ def load_adjacency_data(context, df: pd.DataFrame):
     context.log.info("Loading adjacency_list data")
 
     # Load data into 'adjacency_list' table
-    # NOTE: If table already exists, it will be replaced.
-    # Change to "append" if values will be inserted to the existing table.
+    # NOTE: Since ETL performs a full load, if table already exists, it will be replaced.
     df.to_sql("adjacency_list", con=engine, if_exists="replace", index=False)
     context.log.info("Adjacency data loaded successfully")
 
