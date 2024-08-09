@@ -8,11 +8,11 @@ The pipeline is defined using a series of Dagster resources and operations, maki
 
 
 ├── pipelines
-    ├──adjacency_data_pipeline.py   # Main pipeline definition and operations
+├──── pipleines/adjacency_data_pipeline.py  # Main pipeline definition and operations
 ├── schedules
-    ├── daily_schedule.py           # Dagster schedule configuration
-├── main.py                         # Entry point for Dagster jobs and schedules
-└── workspace.yaml                  # Dagster workspace configuration
+├──── schedules/daily_schedule.py           # Dagster schedule configuration
+├── main.py                                 # Entry point for Dagster jobs and schedules
+└── workspace.yaml                          # Dagster workspace configuration
 
 ## Project Structure
 
