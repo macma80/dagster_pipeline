@@ -1,4 +1,4 @@
-# Adjacency Data Pipeline
+# Node Adjacency Data Pipeline
 
 This repository contains a Dagster pipeline that processes and loads adjacency data from an Excel file into a MySQL database.
 The pipeline is defined using a series of Dagster resources and operations, making it easy to manage data extraction, transformation, and loading (ETL) tasks, as well as a scheduled job to run the pipeline daily. Note that this ETL pipeline performs a full load, this is done for three reasons: because of the data characteristics, to simplify the logic and to avoid the potential errors or inconsistencies caused by incremental load. This project currently reads the Excel file from local storage. However, the design is flexible and can be extended in the future to support reading files directly from AWS S3 or other cloud storage solutions. This option is left out for future improvements. 
