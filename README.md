@@ -58,7 +58,7 @@ The pipeline is defined using a series of Dagster resources and operations, maki
     ```
 
 3. Ensure that your MySQL database is up and running. 
-   1. If it doesn't exist, create MySQL table `nodes`
+   1. If it doesn't exist, create MySQL table `nodes`. Note that the `PRIMARY KEY` for this table is the column B (and row 2) from the Excel file. Column A (and row 1) is added to the table, but it is treated as an extra node feature. 
     ```bash
     CREATE TABLE nodes (
         id CHAR(10) PRIMARY KEY,
@@ -67,7 +67,7 @@ The pipeline is defined using a series of Dagster resources and operations, maki
     );
     ```
 
-   2. If it doesn't exist, create MySQL table `adjacency_list`
+   2. If it doesn't exist, create MySQL table `adjacency_list`. Note that although the value of the relationship from_node_id and to_node_id is always 1, it can be used to represent the weight of the relationship between the nodes. Also, in most cases an adjacency matrix does not contain values in the main diagonal, for this reason a validation has been added in the transformation step to prevent self-loop relationships. 
 
     ```bash
     CREATE TABLE adjacency_list (
