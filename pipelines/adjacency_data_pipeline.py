@@ -1,8 +1,9 @@
 import os
+import json
+import pandas as pd
 from dagster import job, op, resource
 from sqlalchemy import create_engine
-import pandas as pd
-from job_config import JOB_CONFIG
+from job_config import config_json
 
 
 @resource(config_schema={"file_path": str, "adjacency_sheet_name": str, "nodes_sheet_name": str})
@@ -186,7 +187,7 @@ def load_adjacency_data(context, df: pd.DataFrame):
     context.log.info("Adjacency data loaded successfully")
 
 
-@job(resource_defs={"file_resource": file_resource, "db_resource": db_resource}, config=JOB_CONFIG)
+@job(resource_defs={"file_resource": file_resource, "db_resource": db_resource}, config=json.loads(config_json))
 def adjacency_data_pipeline():
     """
     Defines a Dagster job to process and load adjacency data from an Excel file into a MySQL database.
