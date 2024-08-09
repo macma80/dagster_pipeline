@@ -1,0 +1,4 @@
+load_from:
+  - python_file: main.py
+  - python_module: pipelines
+  - python_module: schedules
